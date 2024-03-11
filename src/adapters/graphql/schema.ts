@@ -43,6 +43,7 @@ export const typeDefs = gql`
 
 export const resolvers = {
   Query: {
+    //Query (1)
     getAllUsers: async () => {
       try {
         const users = await User.find();
@@ -52,6 +53,7 @@ export const resolvers = {
         return [];
       }
     },
+    //Query (2)
     getUserById: async (_: any, { id }: { id: string }) => {
       try {
         const user = await User.findById(id);
@@ -61,6 +63,7 @@ export const resolvers = {
         return null;
       }
     },
+    //Query (3)
     getAllPosts: async () => {
       try {
         const posts = await Post.find();
@@ -70,6 +73,7 @@ export const resolvers = {
         return [];
       }
     },
+    //Query (4)
     getPostById: async (_: any, { id }: { id: string }) => {
       try {
         const post = await Post.findById(id);
@@ -79,6 +83,7 @@ export const resolvers = {
         return null;
       }
     },
+    //Query (5)
     getAllComments: async () => {
       try {
         const comments = await Comment.find();
@@ -88,6 +93,7 @@ export const resolvers = {
         return [];
       }
     },
+    //Query (6)
     getCommentById: async (_: any, { id }: { id: string }) => {
       try {
         const comment = await Comment.findById(id);
@@ -99,6 +105,7 @@ export const resolvers = {
     },
   },
   Mutation: {
+    //Mutacion (0.1) register 
     register: async (_, { username, email, password, displayName }) => {
       const user = new User({ username, email, password, displayName });
       user.password = await encryptPassword(user.password);
@@ -111,7 +118,7 @@ export const resolvers = {
       });
       return token;
     },
-
+    //Mutacion (0.2) ogin
     login: async (_, { email, password }) => {
       const user = await User.findOne({ email }).select("+password");
 
