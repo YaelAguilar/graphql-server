@@ -1,12 +1,8 @@
-import { Schema, model, Document } from 'mongoose';
+// Comment.ts
+import { Schema, model } from 'mongoose';
+import { CommentInterface } from './interfaces/CommentInterface';
 
-interface IComment extends Document {
-  comment: string;
-  userId: string;
-  postId: string;
-}
-
-const comment = new Schema<IComment>(
+const commentSchema = new Schema<CommentInterface>(
   {
     comment: {
       type: String,
@@ -26,6 +22,6 @@ const comment = new Schema<IComment>(
   }
 );
 
-const Comment = model<IComment>('Comment', comment);
+const Comment = model<CommentInterface>('Comment', commentSchema);
 
 export { Comment };

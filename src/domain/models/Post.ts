@@ -1,12 +1,8 @@
-import { Schema, model, Document } from "mongoose";
+// Post.ts
+import { Schema, model } from 'mongoose';
+import { PostInterface } from './interfaces/PostInterface';
 
-interface IPost extends Document {
-    authorId: String;
-    title: String;
-    body: String;
-}
-
-const post = new Schema<IPost>(
+const postSchema = new Schema<PostInterface>(
   {
     authorId: {
       type: String,
@@ -26,6 +22,6 @@ const post = new Schema<IPost>(
   }
 );
 
-const Post = model<IPost>("Post", post);
+const Post = model<PostInterface>('Post', postSchema);
 
 export { Post };
