@@ -6,7 +6,7 @@ interface IPost extends Document {
     body: String;
 }
 
-const postSchema = new Schema<IPost>(
+const post = new Schema<IPost>(
   {
     authorId: {
       type: String,
@@ -26,6 +26,6 @@ const postSchema = new Schema<IPost>(
   }
 );
 
-const Post = model<IPost>("Post", postSchema);
+const Post = model<IPost>("Post", post);
 
-export default Post;
+export { Post };

@@ -1,7 +1,6 @@
 import { gql } from 'apollo-server';
-import Post from './models/Post';
-import User from './models/User';
-import Comment from './models/Comment';
+import { User, Post, Comment } from './models'
+import { encryptPassword, comparePassword, createJWTToken } from './util';
 
 export const typeDefs = gql`
   type User {
@@ -33,6 +32,11 @@ export const typeDefs = gql`
     getPostById(id: ID!): Post
     getAllComments: [Comment!]!
     getCommentById(id: ID!): Comment
+  }
+
+  type Mutation {
+    register(username: String!, email: String!, password: String!, displayName: String!): String
+    login(email: String!, password: String!): String
   }
 `;
 
@@ -91,6 +95,38 @@ export const resolvers = {
         console.error("Error fetching comment by ID:", error);
         return null;
       }
+    },
+  },
+  Mutation: {
+    register: async (_, { username, email, password, displayName }) => {
+      const user = new User({ username, email, password, displayName });
+      user.password = await encryptPassword(user.password);
+      await user.save();
+
+      const token = createJWTToken({
+        _id: user._id,
+        email: user.email,
+        displayName: user.displayName,
+      });
+      return token;
+    },
+
+    login: async (_, { email, password }) => {
+      const user = await User.findOne({ email }).select("+password");
+
+      if (!user) throw new Error("Invalid Username");
+
+      const validPassword = await comparePassword(password, user.password);
+
+      if (!validPassword) throw new Error("Invalid Password");
+
+      const token = createJWTToken({
+        _id: user._id,
+        email: user.email,
+        displayName: user.displayName,
+      });
+
+      return token;
     },
   },
   Post: {

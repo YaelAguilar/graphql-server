@@ -1,4 +1,5 @@
-import * as bcrypt from './bcrypt';
-import * as auth from './auth';
+import { encryptPassword, comparePassword } from './bcrypt';
+import { createJWTToken } from './auth';
 
-export default { bcrypt, auth };
+
+export { encryptPassword, comparePassword, createJWTToken };

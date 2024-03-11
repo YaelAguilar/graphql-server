@@ -7,7 +7,8 @@ interface IUser extends Document {
   displayName: string;
 }
 
-const userSchema = new Schema<IUser>({
+const user = new Schema<IUser>(
+  {
   username: {
     type: String,
     required: true,
@@ -33,8 +34,9 @@ const userSchema = new Schema<IUser>({
 }, {
   versionKey: false,
   timestamps: true,
-});
+  }
+);
 
-const User = model<IUser>('User', userSchema);
+const User = model<IUser>('User', user);
 
-export default User;
+export { User };

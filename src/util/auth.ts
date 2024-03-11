@@ -12,4 +12,4 @@ const createJWTToken = (user: any) => {
   });
 };
 
-export default { createJWTToken };
+export { createJWTToken };

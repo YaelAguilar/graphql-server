@@ -6,7 +6,7 @@ interface IComment extends Document {
   postId: string;
 }
 
-const commentSchema = new Schema<IComment>(
+const comment = new Schema<IComment>(
   {
     comment: {
       type: String,
@@ -26,6 +26,6 @@ const commentSchema = new Schema<IComment>(
   }
 );
 
-const Comment = model<IComment>('Comment', commentSchema);
+const Comment = model<IComment>('Comment', comment);
 
-export default Comment;
+export { Comment };
