@@ -1,6 +1,7 @@
 import { gql } from 'apollo-server';
-import { User, Post, Comment } from './models'
-import { encryptPassword, comparePassword, createJWTToken } from './util';
+import { User, Post, Comment } from '../../domain/models'
+import { encryptPassword, comparePassword } from '../../infrastructure/bcrypt/bcrypt'
+import { createJWTToken } from '../../infrastructure/auth/auth'
 
 export const typeDefs = gql`
   type User {

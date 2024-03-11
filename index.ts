@@ -1,7 +1,7 @@
 import { ApolloServer } from 'apollo-server';
 import { config } from 'dotenv';
-import { typeDefs, resolvers } from './src/schema';
-import connectDB from './src/db';
+import { typeDefs, resolvers } from './src/adapters/graphql/schema';
+import connectDB from './src/infrastructure/database';
 
 config();
 
