@@ -35,5 +35,11 @@ export const typeDefs = gql`
   type Mutation {
     register(username: String!, email: String!, password: String!, displayName: String!): String
     login(email: String!, password: String!): String
+    createPost(title: String!, body: String!): Post
+    updatePost(id: ID!, title: String!, body: String!): Post
+    deletePost(postId: ID!): String
+    addComment(postId: ID!, comment: String!): Comment
+    updateComment(id: ID!, comment: String!): Comment
+    deleteComment(id: ID!): String
   }
 `;
