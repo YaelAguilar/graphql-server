@@ -1,6 +1,7 @@
 import { User, Post, Comment } from '../../../domain/models';
 import { encryptPassword, comparePassword } from '../../../infrastructure/bcrypt/bcrypt';
 import { createJWTToken } from '../../../infrastructure/auth/auth';
+import { pubsub } from './suscriptionResolvers';
 
 export const mutationResolvers = {
 
@@ -72,6 +73,10 @@ export const mutationResolvers = {
     });
 
     await newComment.save();
+    
+    //pubsub.publish('commentAdded', { commentAdded: newComment });
+    pubsub.publish(`commentAdded:${postId}`, { commentAdded: newComment });
+
     return newComment;
   },
   updateComment: async (_, { id, comment }, { verifiedUser }) => {

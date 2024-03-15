@@ -1,5 +1,6 @@
 import { queryResolvers } from './queryResolvers';
 import { mutationResolvers } from './mutationResolvers';
+import { subscriptionResolvers } from './suscriptionResolvers';
 import { postResolvers, commentResolvers } from './postCommentResolvers';
 
 export const resolvers = {
@@ -7,4 +8,5 @@ export const resolvers = {
   Mutation: mutationResolvers,
   Post: postResolvers,
   Comment: commentResolvers,
+  Subscription: subscriptionResolvers,
 };

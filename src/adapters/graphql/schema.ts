@@ -42,4 +42,8 @@ export const typeDefs = gql`
     updateComment(id: ID!, comment: String!): Comment
     deleteComment(id: ID!): String
   }
+
+  type Subscription {
+    commentAdded(postId: ID!): Comment
+  }
 `;

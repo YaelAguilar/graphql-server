@@ -1,14 +1,20 @@
-import { ApolloServer } from 'apollo-server';
+import { ApolloServer } from 'apollo-server-express';
+import express from 'express';
+import http from 'http';
+import { WebSocketServer } from 'ws';
+import { useServer } from 'graphql-ws/lib/use/ws';
 import { config } from 'dotenv';
 import jwt from 'jsonwebtoken';
 import { typeDefs } from './src/adapters/graphql/schema';
 import { resolvers } from './src/adapters/graphql/resolvers';
 import connectDB from './src/infrastructure/database';
+import { makeExecutableSchema } from '@graphql-tools/schema';
 
 config();
 
+const JWT_SECRET = process.env.JWT_SECRET;
+
 const verifyToken = (token: string) => {
-  const JWT_SECRET = process.env.JWT_SECRET;
   if (!JWT_SECRET) {
     throw new Error("JWT_SECRET is not defined in .env file");
   }
@@ -20,9 +26,13 @@ const verifyToken = (token: string) => {
   }
 };
 
+const schema = makeExecutableSchema({ typeDefs, resolvers });
+
+const app = express();
+const httpServer = http.createServer(app);
+
 const server = new ApolloServer({
-  typeDefs,
-  resolvers,
+  schema,
   context: ({ req }) => {
     const tokenWithBearer = req.headers.authorization || '';
     const token = tokenWithBearer.split(' ')[1];
@@ -31,10 +41,20 @@ const server = new ApolloServer({
   },
 });
 
-const startServer = async () => {
-  await connectDB();
-  const { url } = await server.listen({ port: 4000 });
-  console.log(`🚀 Server ready at: ${url}`);
-};
+server.start().then(() => {
+  server.applyMiddleware({ app });
 
-startServer();
+  const wsServer = new WebSocketServer({
+    server: httpServer,
+    path: '/graphql',
+  });
+
+  useServer({ schema }, wsServer);
+
+  httpServer.listen({ port: 4000 }, () => {
+    console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`);
+    console.log(`🚀 Subscriptions ready at ws://localhost:4000/graphql`);
+  });
+});
+
+connectDB();
