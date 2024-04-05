@@ -4,6 +4,6 @@ export const pubsub = new PubSub();
 
 export const subscriptionResolvers = {
   commentAdded: {
-    subscribe: (_, { postId }) => pubsub.asyncIterator(`commentAdded:${postId}`)
+    subscribe: (_: any, { postId }: any) => pubsub.asyncIterator(`commentAdded:${postId}`)
   },
 };
