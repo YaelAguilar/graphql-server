@@ -19,13 +19,16 @@ export const queryResolvers = {
       return null;
     }
   },
-  getAllPosts: async () => {
+  getAllPosts: async (_:any, { limit, offset }) => {
     try {
-      const posts = await Post.find();
-      return posts || [];
+      const posts = await Post.find().limit(limit).skip(offset);
+      const totalCount = await Post.countDocuments();
+      return { posts, totalCount };
+      /*const posts = await Post.find();
+      return posts || [];*/
     } catch (error) {
       console.error("Error fetching posts:", error);
-      return [];
+      return { posts: [], totalCount: 0 };
     }
   },
   getPostById: async (_: any, { id }: { id: string }) => {
@@ -37,13 +40,16 @@ export const queryResolvers = {
       return null;
     }
   },
-  getAllComments: async () => {
+  getAllComments: async (_:any, {limit, offset} ) => {
     try {
-      const comments = await Comment.find();
-      return comments || [];
+      /*const comments = await Comment.find();
+      return comments || [];*/
+      const comments = await Comment.find().limit(limit).skip(offset);
+      const totalCount = await Comment.countDocuments();
+      return { comments, totalCount };
     } catch (error) {
       console.error("Error fetching comments:", error);
-      return [];
+      return { comments: [], totalCount: 0 };
     }
   },
   getCommentById: async (_: any, { id }: { id: string }) => {

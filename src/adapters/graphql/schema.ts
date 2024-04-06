@@ -23,12 +23,22 @@ export const typeDefs = gql`
     comments: [Comment!]!
   }
 
+  type PaginatedPosts {
+    posts: [Post!]!
+    totalCount: Int!
+  }
+
+  type PaginatedComments {
+    comments: [Comment!]!
+    totalCount: Int!
+  }
+
   type Query {
     getAllUsers: [User!]!
     getUserById(id: ID!): User
-    getAllPosts: [Post!]!
+    getAllPosts(limit: Int!, offset: Int!): PaginatedPosts!
     getPostById(id: ID!): Post
-    getAllComments: [Comment!]!
+    getAllComments(limit: Int!, offset: Int!): PaginatedComments!
     getCommentById(id: ID!): Comment
   }
 
