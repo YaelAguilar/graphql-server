@@ -1,4 +1,3 @@
-// User.ts
 import { Schema, model } from 'mongoose';
 import { UserInterface } from './interfaces/UserInterface';
 

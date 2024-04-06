@@ -40,6 +40,7 @@ export const typeDefs = gql`
     getPostById(id: ID!): Post
     getAllComments(limit: Int!, offset: Int!): PaginatedComments!
     getCommentById(id: ID!): Comment
+    getCommentsByPostId(postId: ID!): [Comment!]!
   }
 
   type Mutation {

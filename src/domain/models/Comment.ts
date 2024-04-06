@@ -1,4 +1,3 @@
-// Comment.ts
 import { Schema, model } from 'mongoose';
 import { CommentInterface } from './interfaces/CommentInterface';
 

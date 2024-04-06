@@ -1,4 +1,3 @@
-// Post.ts
 import { Schema, model } from 'mongoose';
 import { PostInterface } from './interfaces/PostInterface';
 

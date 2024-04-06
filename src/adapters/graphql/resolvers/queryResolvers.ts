@@ -61,4 +61,13 @@ export const queryResolvers = {
       return null;
     }
   },
+  getCommentsByPostId: async (_: any, { postId }: { postId: string }) => {
+    try {
+      const comments = await Comment.find({ postId: postId });
+      return comments || [];
+    } catch (error) {
+      console.error("Error fetching comments by post ID:", error);
+      return [];
+    }
+  },
 };
