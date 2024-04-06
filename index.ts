@@ -53,6 +53,7 @@ server.start().then(() => {
 
   useServer({ schema }, wsServer);
 
+  //soporte para webhooks
   app.post('/webhook', (req, res) => {
     const { event, url } = req.body;
     webhookService.register(event, url);

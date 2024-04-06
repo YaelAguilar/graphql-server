@@ -34,18 +34,22 @@ export const typeDefs = gql`
   }
 
   type Query {
+    #5 queries
     getAllUsers: [User!]!
     getUserById(id: ID!): User
-    getAllPosts(limit: Int!, offset: Int!): PaginatedPosts!
     getPostById(id: ID!): Post
-    getAllComments(limit: Int!, offset: Int!): PaginatedComments!
     getCommentById(id: ID!): Comment
     getCommentsByPostId(postId: ID!): [Comment!]!
+    #2 quieries con paginación
+    getAllPosts(limit: Int!, offset: Int!): PaginatedPosts!
+    getAllComments(limit: Int!, offset: Int!): PaginatedComments!
   }
 
   type Mutation {
+    #login & register
     register(username: String!, email: String!, password: String!, displayName: String!): String
     login(email: String!, password: String!): String
+    #5 mutaciones (1 extra para mantener coherencia)
     createPost(title: String!, body: String!): Post
     updatePost(id: ID!, title: String!, body: String!): Post
     deletePost(postId: ID!): String
@@ -55,6 +59,7 @@ export const typeDefs = gql`
   }
 
   type Subscription {
+    #1 suscripción
     commentAdded(postId: ID!): Comment
   }
 `;
