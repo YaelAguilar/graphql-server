@@ -2,10 +2,11 @@ import { User, Post, Comment } from '../../../domain/models';
 import { encryptPassword, comparePassword } from '../../../infrastructure/bcrypt/bcrypt';
 import { createJWTToken } from '../../../infrastructure/auth/auth';
 import { pubsub } from './suscriptionResolvers';
+import { webhookService } from '../../../infrastructure/webhooks/webhookService';
 
 export const mutationResolvers = {
 
-  register: async (_, { username, email, password, displayName }) => {
+  register: async (_:any, { username, email, password, displayName }) => {
     const user = new User({ username, email, password, displayName });
     user.password = await encryptPassword(user.password);
     await user.save();
@@ -17,7 +18,7 @@ export const mutationResolvers = {
     });
     return token;
   },
-  login: async (_, { email, password }) => {
+  login: async (_:any, { email, password }) => {
     const user = await User.findOne({ email }).select("+password");
 
     if (!user) throw new Error("Invalid Username");
@@ -34,7 +35,7 @@ export const mutationResolvers = {
 
     return token;
   },
-  createPost: async (_, {title, body }, { verifiedUser }) => {
+  createPost: async (_:any, {title, body }, { verifiedUser }) => {
     if (!verifiedUser) throw new Error("You must be logged in to do that");
 
     const post = new Post({
@@ -44,9 +45,17 @@ export const mutationResolvers = {
     });
 
     await post.save();
+
+    webhookService.trigger('postCreated', {
+      postId: post._id.toString(),
+      title: post.title,
+      body: post.body,
+      authorId: post.authorId.toString(),
+    });
+
     return post;
   },
-  updatePost: async (_, { id, title, body }, { verifiedUser }) => {
+  updatePost: async (_:any, { id, title, body }, { verifiedUser }) => {
     const postUpdated = await Post.findOneAndUpdate(
       { _id: id, authorId: verifiedUser._id },
       { title, body },
@@ -56,7 +65,7 @@ export const mutationResolvers = {
     if (!postUpdated) throw new Error("No post for given id");
     return postUpdated;
   },
-  deletePost: async (_, { postId }, { verifiedUser }) => {
+  deletePost: async (_:any, { postId }, { verifiedUser }) => {
     const postDeleted = await Post.findByIdAndDelete({
       _id: postId,
       authorId: verifiedUser._id,
@@ -65,7 +74,7 @@ export const mutationResolvers = {
     if (!postDeleted) throw new Error("No post with given ID found for the author");
     return "Post deleted";
   },
-  addComment: async (_, { postId, comment }, { verifiedUser }) => {
+  addComment: async (_:any, { postId, comment }, { verifiedUser }) => {
     const newComment = new Comment({
       userId: verifiedUser._id,
       postId,
@@ -79,7 +88,7 @@ export const mutationResolvers = {
 
     return newComment;
   },
-  updateComment: async (_, { id, comment }, { verifiedUser }) => {
+  updateComment: async (_:any, { id, comment }, { verifiedUser }) => {
     const commentUpdated = await Comment.findOneAndUpdate(
       { _id: id, userId: verifiedUser._id },
       { comment },
@@ -90,7 +99,7 @@ export const mutationResolvers = {
     return commentUpdated;
   },
 
-  deleteComment: async (_, { id }, { verifiedUser }) => {
+  deleteComment: async (_:any, { id }, { verifiedUser }) => {
     const commentDelete = await Comment.findOneAndDelete({
       _id: id,
       userId: verifiedUser._id,

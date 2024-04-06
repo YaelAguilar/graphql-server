@@ -9,6 +9,7 @@ import { typeDefs } from './src/adapters/graphql/schema';
 import { resolvers } from './src/adapters/graphql/resolvers';
 import connectDB from './src/infrastructure/database';
 import { makeExecutableSchema } from '@graphql-tools/schema';
+import { webhookService } from './src/infrastructure/webhooks/webhookService';
 
 config();
 
@@ -29,6 +30,7 @@ const verifyToken = (token: string) => {
 const schema = makeExecutableSchema({ typeDefs, resolvers });
 
 const app = express();
+app.use(express.json());
 const httpServer = http.createServer(app);
 
 const server = new ApolloServer({
@@ -50,6 +52,12 @@ server.start().then(() => {
   });
 
   useServer({ schema }, wsServer);
+
+  app.post('/webhook', (req, res) => {
+    const { event, url } = req.body;
+    webhookService.register(event, url);
+    res.json({ message: 'Webhook registrado exitosamente' });
+  });
 
   httpServer.listen({ port: 4000 }, () => {
     console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`);
